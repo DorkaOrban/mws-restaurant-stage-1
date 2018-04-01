@@ -2,31 +2,34 @@
 <html>
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Normalize.css for better cross-browser consistency -->
-  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-  <!-- Main CSS file -->
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/mobilescreen.css">
-  <link rel="apple-touch-icon" sizes="57x57" href="img/favicon/apple-icon-57x57.png">
-  <link rel="apple-touch-icon" sizes="60x60" href="/img/favicon/apple-icon-60x60.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/img/favicon/apple-icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon/apple-icon-76x76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="/img/favicon/apple-icon-114x114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/img/favicon/apple-icon-120x120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/img/favicon/apple-icon-144x144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/img/favicon/apple-icon-152x152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-icon-180x180.png">
-  <link rel="icon" type="image/png" sizes="192x192"  href="/img/favicon/android-icon-192x192.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="96x96" href="/img/favicon/favicon-96x96.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
-  <link rel="manifest" href="/img/favicon/manifest.json">
-  <meta name="msapplication-TileColor" content="#ffffff">
-  <meta name="msapplication-TileImage" content="/img/favicon/ms-icon-144x144.png">
-  <meta name="theme-color" content="#ffffff">
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="yes" name="apple-touch-fullscreen" />
+    <meta content="Udacity, Orbán Dorottya" name="author" />
+    <meta content="Restaurant reviews app" name="description" />
+    <meta content="Udacity, Orbán Dorottya © 2018" name="copyright" />
+    
+    <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/mobilescreen.css">
+    <link rel="apple-touch-icon" sizes="57x57" href="img/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/img/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/img/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/img/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/img/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/img/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/img/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/img/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/img/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/img/favicon/manifest.json">
+    <link rel="icon" href="/img/favicon/favicon.ico" type="image/x-icon" />
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/img/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
   <title>Restaurant Info</title>
 </head>
 
@@ -35,15 +38,9 @@
   <header>
     <!-- Beginning nav -->
     <nav>
-      <h1><a href="/">Restaurant Reviews</a></h1>
+      <h1><a class="jsHomeLink" title="Restaurant Reviews Home page" href="/">Restaurant Reviews</a></h1>
     </nav>
-    <!-- Beginning breadcrumb -->
-    <div class="breadcrumb" > 
-      <ul id="breadcrumb" >
-        <li><a href="/">Home</a></li>
-      </ul>
-    </div>
-    <!-- End breadcrumb -->
+     
     <!-- End nav -->
   </header>
   <!-- End header -->
@@ -52,9 +49,19 @@
   <main id="maincontent">
     <!-- Beginning map -->
     <section id="map-container">
-      <div id="map"></div>
+        <div class="map-offline-placeholder">
+            <h2 class="emphasis">Google Map</h2>
+            <p class="emphasis">Connect to a Wifi or Mobile network to view the map.</p>
+        </div>
+        <div id="map" aria-hidden="true" role="application"></div>
     </section>
     <!-- End map -->
+    <!-- Beginning breadcrumb -->
+    <ul id="breadcrumb" >
+        <li><a title="Home" href="/">Home</a></li>
+      </ul>
+      <!-- End breadcrumb -->
+
     <!-- Beginning restaurant -->
     <section id="restaurant-container">
       <h1 id="restaurant-name"></h1>
@@ -73,10 +80,10 @@
   <!-- End main -->
 
   <!-- Beginning footer -->
-  <footer id="footer" class="footer-restaurant">
-    <span class="copyright-span" >Copyright (c) 2017 </span><br>
-    <span class="a-span" ><a href="/"><strong>Restaurant Reviews</strong></a> </span><br>
-    <span class="all-rights-span" >All Rights Reserved.</span>
+  <footer id="footer" class="footer">
+      <span class="copyright-span" >Copyright (c) 2018 </span><br>
+      <span class="a-span" ><a href="/" class="jsHomeLink" title="Restaurant Reviews Home page"><strong>Restaurant Reviews</strong></a> </span><br>
+      <span class="all-rights-span" >All Rights Reserved.</span>
   </footer>
   <!-- End footer -->
 

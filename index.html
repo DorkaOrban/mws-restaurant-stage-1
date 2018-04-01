@@ -4,6 +4,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="yes" name="apple-touch-fullscreen" />
+  <meta content="Udacity, Orbán Dorottya" name="author" />
+  <meta content="Restaurant reviews app" name="description" />
+  <meta content="Udacity, Orbán Dorottya © 2018" name="copyright" />
+  
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/mobilescreen.css">
@@ -21,6 +26,7 @@
   <link rel="icon" type="image/png" sizes="96x96" href="/img/favicon/favicon-96x96.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
   <link rel="manifest" href="/img/favicon/manifest.json">
+  <link rel="icon" href="/img/favicon/favicon.ico" type="image/x-icon" />
   <meta name="msapplication-TileColor" content="#ffffff">
   <meta name="msapplication-TileImage" content="/img/favicon/ms-icon-144x144.png">
   <meta name="theme-color" content="#ffffff">
@@ -28,21 +34,27 @@
   <title>Restaurant Reviews</title>
 
   <script charset="utf-8" src="js/dbhelper.js"></script>
-  <script charset="utf-8" src="js/main.js"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhGqw_kRZsGFx3-hbCdUq7966XZySAyFA&libraries=places&callback=initMap"></script>
+  <script charset="utf-8" src="js/common.js"></script>
+  <script charset="utf-8" src="js/main.js"></script> 
+  <script charset="utf-8" src="../assets/offline.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzSqvE6sHuzwcBsECSqTlsZ-kbvLrNOuk&libraries=places&callback=initMap"></script>
   
 </head>
 
 <body>
   <header>
     <nav>
-      <h1><a href="/">Restaurant Reviews</a></h1>
+      <h1><a class="jsHomeLink" title="Restaurant Reviews Home page" href="/">Restaurant Reviews</a></h1>
     </nav>
   </header>
 
   <main id="maincontent" class ="main-content">
     <section id="map-container">
-      <div id="map"></div>
+        <div class="map-offline-placeholder">
+            <h2 class="emphasis">Google Map</h2>
+            <p class="emphasis">Connect to a Wifi or Mobile network to view the map.</p>
+        </div>
+        <div id="map" aria-hidden="true" role="application"></div>
     </section>
 
     <section id="filter-options-section" class="filter-results-container" >
@@ -69,8 +81,8 @@
 
 
   <footer id="footer" class="footer">
-    <span class="copyright-span" >Copyright (c) 2017 </span><br>
-    <span class="a-span" ><a href="/"><strong>Restaurant Reviews</strong></a> </span><br>
+    <span class="copyright-span" >Copyright (c) 2018 </span><br>
+    <span class="a-span" ><a href="/" class="jsHomeLink" title="Restaurant Reviews Home page"><strong>Restaurant Reviews</strong></a> </span><br>
     <span class="all-rights-span" >All Rights Reserved.</span>
   </footer>
 

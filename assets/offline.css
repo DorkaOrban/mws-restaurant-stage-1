@@ -1,0 +1,45 @@
+* {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+        -ms-box-sizing: border-box;
+            box-sizing: border-box;
+  }
+  body, html {
+    height: 100%;
+  }
+
+  body {
+    background: #f4f6f6;
+    font: 14pt Arial, sans-serif;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  p {
+    margin: 20px 0;
+  }
+
+  .panel {
+    background: #eee;
+    padding: 40px 60px;
+    border-radius: 6px;
+    width: 40em;
+    margin: 50px auto;
+    max-width: 100%;
+  }
+
+  a,
+  a:link,
+  a:active, 
+  a:visited {
+    color: #f18200;
+    font: 14pt Arial, sans-serif;
+    text-decoration: none;
+  }
+
+  a:hover, 
+  a:focus {
+    text-decoration: underline;
+  }
