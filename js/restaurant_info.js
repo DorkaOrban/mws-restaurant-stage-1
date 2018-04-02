@@ -132,12 +132,12 @@ createReviewHTML = (review) => {
 
   const rating = document.createElement('p');
   rating.innerHTML = `Rating: ${review.rating}`;
-  rating.className = "reviews-user-rating";
+  rating.className = "reviews-user-rating reviews-user-common"; 
   li.appendChild(rating);
 
   const comments = document.createElement('p');
   comments.innerHTML = review.comments;
-  comments.className = "reviews-user-comments";
+  comments.className = "reviews-user-comments reviews-user-common"; 
   li.appendChild(comments);
 
   return li;

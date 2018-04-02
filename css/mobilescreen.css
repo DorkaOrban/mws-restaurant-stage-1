@@ -52,6 +52,10 @@
 }
 
 @media only screen and (max-width: 768px) {
+    #reviews-container h2{
+        padding-left: 10%;
+    }
+
     nav {
         height: 100px; 
         display: flex;
@@ -75,11 +79,10 @@
     }
 
     .inside #map-container {
-        background: blue none repeat scroll 0 0;
+        background: #fff none repeat scroll 0 0;
         height: 400px;
         position: relative;
-        right: 0;
-        /* top: 80px; */
+        right: 0; 
         width: 100%;
     }
     
@@ -115,6 +118,7 @@
     #restaurant-hours{
         font-size: 16pt;
     }
+    
 
     #restaurant-hours .days-of-week,
     .reviews-user-name, 
@@ -124,6 +128,28 @@
         font-size: 12pt;
     }
 
+    .reviews-user-name, 
+    .reviews-user-date{
+        display: inline-block; 
+        color: #000;
+        padding-left: 0;
+        padding-right: 0;
+         
+    }
+
+    .reviews-user-name {
+        border-radius: 20px 0px 0px 0px;
+    }
+
+    .reviews-user-comment{
+        border-radius: 0px 0px 0px 20px;
+    }
+
+    .reviews-user-date{
+        text-align: right; 
+        padding-top: 10px;
+    }
+    
     .days-of-week{
         padding-left: 10%;
     }
@@ -139,8 +165,7 @@
     #reviews-list li{
         width: 80%;
         margin: 0 auto;
-        border: 0; 
-        border-bottom: 2px dotted #000;
+        border: 0;  
     }
 
     #reviews-list li:last-of-type{
@@ -149,11 +174,74 @@
     #restaurant-address{
         margin: 10pt 10pt;
     }
+
+    .map-offline-placeholder {
+        display: none;
+        height: 300px; 
+        -webkit-align-items: center !important; 
+        align-items: center !important;
+    }
+
+    #breadcrumb li { 
+        font-size: 12pt;
+    }
+
+    #breadcrumb{
+        margin-top: 40pt;
+    }
+
+    h1, h2, h3, h4, h5, h6 { 
+        margin: 0 0 0px;
+    }
+
+    h2.emphasis {
+        margin-top:  35%;
+
+    }
 } 
+
+@media screen and (max-width: 533px){
+    .reviews-user-date{
+        max-width: 80%;
+    }
+}
+
+@media screen and (max-width: 455px){
+    .reviews-user-date{
+        max-width: 70%;
+    }
+
+    #restaurant-hours td {
+        color: #666;
+        max-width: 148px;
+    }
+}
 
 @media screen and (max-width: 363px){
     nav {
         width: 100%;
+    }
+    
+    .reviews-user-name, 
+    .reviews-user-date {
+        max-width: 100%;
+        text-align: left;
+        width: 100%;
+    }
+
+    .reviews-user-name{
+        margin-bottom: 0 !important;
+    }
+
+    .reviews-user-name, 
+    .reviews-user-date{
+        display: block;
+    }
+
+    nav h1 a, 
+    nav h1 a:hover,
+    nav h1 a:focus{
+        letter-spacing: 6px;
     }
 }
 

@@ -1,7 +1,7 @@
 const CACHE_NAME = 'my-site-cache-v5';
 const urlsToCache = [
   './',
-  // '/img/',
+  '/img/favicon/',
   '/data/restaurants.json', 
   '/index.html',
   '/restaurant.html',
@@ -10,17 +10,17 @@ const urlsToCache = [
   '/js/dbhelper.js',
   '/js/main.js',
   '/js/restaurant_info.js',
+  '/404.html'
 ];
 
+// Perform install steps
 self.addEventListener('install', (event) => {
-    // Perform install steps
     event.waitUntil(
         caches.open(CACHE_NAME)
         .then((cache) => {
             console.log('Opened cache');
             return cache.addAll(urlsToCache).catch(() => {
               console.log('cache: '+cache)
-              console.log('cache error')
               console.log('urlsToCache: '+urlsToCache)
             });
         }) 
@@ -51,18 +51,16 @@ self.addEventListener('activate', (event) => {
 });
 
 // this is the service worker which intercepts all http requests
-
 self.addEventListener("fetch", event => {
-  // Skip cross-origin requests, like those for Google Analytics or Maps
   const requestUrl = event.request.url;
-  if (requestUrl.endsWith("assets/404.html")) {
-    //Do not catchoffline.html.
-    //It is used to detect if the user isn't connected to any netword
+  if (requestUrl.endsWith("404.html")) {
+    //it is used to detect if the user isn't connected to any netword
     return;
   }
+
   if (requestUrl.startsWith(self.location.origin)){
     event.respondWith(
-      caches.match(event.request).then(cachedResponse => {
+      caches.match(event.request, {ignoreSearch:true}).then(cachedResponse => {
         if (cachedResponse) {
           return cachedResponse;
         }
@@ -70,6 +68,10 @@ self.addEventListener("fetch", event => {
         if (requestUrl.endsWith("jpg")) {
           targetCache = CACHE_NAME;
         }
+        if(requestUrl.indexOf("google") > -1){
+          return fetch(event.request);
+        }
+        
         return caches
           .open(targetCache)
           .then(cache => {

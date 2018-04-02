@@ -36,7 +36,7 @@
   <script charset="utf-8" src="js/dbhelper.js"></script>
   <script charset="utf-8" src="js/common.js"></script>
   <script charset="utf-8" src="js/main.js"></script> 
-  <script charset="utf-8" src="../assets/offline.js"></script>
+  <script charset="utf-8" src="assets/offline.js"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzSqvE6sHuzwcBsECSqTlsZ-kbvLrNOuk&libraries=places&callback=initMap"></script>
   
 </head>
@@ -51,9 +51,10 @@
   <main id="maincontent" class ="main-content">
     <section id="map-container">
         <div class="map-offline-placeholder">
-            <h2 class="emphasis">Google Map</h2>
+            <h2 class="emphasis">Google Map</h2><br>
             <p class="emphasis">Connect to a Wifi or Mobile network to view the map.</p>
         </div>
+        <a class="skiplink" aria-hidden="false" title="Skip to main content" href="#filter-options-section">Skip to main content</a>
         <div id="map" aria-hidden="true" role="application"></div>
     </section>
 

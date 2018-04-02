@@ -50,9 +50,10 @@
     <!-- Beginning map -->
     <section id="map-container">
         <div class="map-offline-placeholder">
-            <h2 class="emphasis">Google Map</h2>
+            <h2 class="emphasis">Google Map</h2><br>
             <p class="emphasis">Connect to a Wifi or Mobile network to view the map.</p>
         </div>
+        <a class="skiplink" aria-hidden="false" title="Skip to main content" href="#restaurant-container">Skip to main content</a>
         <div id="map" aria-hidden="true" role="application"></div>
     </section>
     <!-- End map -->
@@ -68,7 +69,9 @@
       <img id="restaurant-img">
       <p id="restaurant-cuisine"></p>
       <p id="restaurant-address"></p>
-      <table id="restaurant-hours"></table>
+      <div style="overflow-x:auto;"> 
+        <table id="restaurant-hours" align="center"></table>
+      </div>
     </section>
     <!-- end restaurant -->
     <!-- Beginning reviews -->

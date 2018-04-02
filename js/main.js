@@ -3,7 +3,7 @@ let restaurants,
   cuisines;
 var map;
 var markers = [];
- 
+
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
@@ -166,9 +166,9 @@ createRestaurantHTML = (restaurant) => {
   more.setAttribute("aria-label", "Read "+ restaurant.name + " restaurant details");
   more.setAttribute("title", "Read "+ restaurant.name + " restaurant details"); 
   more.href = DBHelper.urlForRestaurant(restaurant);
-  li.append(more)
+  li.append(more);
 
-  return li
+  return li;
 }
 
 /**
@@ -184,3 +184,5 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     self.markers.push(marker);
   });
 }
+
+ 
