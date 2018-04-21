@@ -211,7 +211,11 @@ p.emphasis {
 .filter-results-container{
   margin-bottom: 0;
 }
-
+.hide-label{
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+}
 .filter-options select {
   background-color: white;
   border: 1px solid #fff;

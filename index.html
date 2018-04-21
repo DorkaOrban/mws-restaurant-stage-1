@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
@@ -35,7 +35,7 @@
 
   <script charset="utf-8" src="js/dbhelper.js"></script>
   <script charset="utf-8" src="js/common.js"></script>
-  <script charset="utf-8" src="js/main.js"></script> 
+  <script charset="utf-8" src="js/main.js"></script>  
   <script charset="utf-8" src="../assets/offline.js"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzSqvE6sHuzwcBsECSqTlsZ-kbvLrNOuk&libraries=places&callback=initMap"></script>
   
@@ -62,10 +62,11 @@
       <div class="filter-options">
         <!-- <h2>Filter Results</h2> -->
         <div class="inner-filter-option" > 
+          <label for="neighborhoods-select" class="hide-label">Neighborhoods</label>
           <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
             <option value="all">All Neighborhoods</option>
           </select>
-
+          <label for="cuisines-select" class="hide-label">Cuisines</label>
           <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
             <option value="all">All Cuisines</option>
           </select>
