@@ -1,40 +1,92 @@
 /**
  * Common database helper functions.
  */
+var database_version = 10;
 class DBHelper {
-
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 8000 // Change this to your server port
-    return `http://localhost:${port}/data/restaurants.json`;
+    const port = 1337 // Change this to your server port 1337 // 8000
+    //return `http://localhost:${port}/data/restaurants.json`;
+    return `http://localhost:${port}/restaurants`;
   }
 
   /**
-   * Fetch all restaurants.
+   * Database name
    */
-  static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
-      }
-    };
-    xhr.send();
+  static get DATABASE_NAME(){
+    return 'restaurant-db';
   }
 
+  static get DATABASE_VERSION() {
+    return database_version;
+  }
+
+ static setVersion(newVersionNumber) {
+    this.database_version = newVersionNumber;
+    return this.database_version;
+  }
+
+  /**
+   * Fetch all restaurants and save them into idb.
+   */
+  static fetchRestaurants(callback) { 
+    const request = async () => {
+        const response = await fetch(DBHelper.DATABASE_URL)
+        .then((response) => {
+          if(response.ok) {
+            response.json().then(json => {
+              const restaurants = json;
+
+              if("indexedDB" in window) {
+                  console.log("indexedDB is available.");
+                  
+                  idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
+                    console.log('db old '+upgradeDB.oldVersion)
+                    let keyValStore = upgradeDB.createObjectStore('resKeyval');
+                    for(let i in restaurants){ 
+                      keyValStore.put(restaurants[i], i);
+                    }
+                  }).catch(() => {
+                    console.log('Failed');
+                  });
+                } else {
+                    console.log("indexedDB isn't available.");
+                }
+                callback(null, restaurants);
+            });
+          } else {
+            console.log(`Request failed. Returned status of ${response.status} with ${response.statusText}`);
+          }
+        }).catch(error => {
+          DBHelper.setVersion(DBHelper.DATABASE_VERSION);
+          // console.log(DBHelper.DATABASE_VERSION)
+          idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
+            switch (upgradeDB.oldVersion) {
+              case 0:
+                upgradeDB.createObjectStore('resKeyval');
+              case 1:
+                // upgradeDB.createObjectStore('resKeyval2', {keyPath: ''});
+            }
+          }).then(db => {
+            return db.transaction('resKeyval')
+              .objectStore('resKeyval').getAll();
+          }).then(allObjs => callback(null, allObjs));
+
+        });
+    }
+    request();
+
+  }
+
+  
   /**
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
+    
     // fetch all restaurants with proper error handling.
     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
@@ -150,7 +202,9 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+    let photog = restaurant.photograph;
+    if(typeof photog  == 'undefined') photog = restaurant.id;
+    return (`/img/${photog}.jpg`);
   }
 
   /**

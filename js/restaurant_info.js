@@ -19,6 +19,7 @@ window.initMap = () => {
     }
   });
 }
+ 
 
 /**
  * Get current restaurant from page URL.
@@ -39,7 +40,18 @@ fetchRestaurantFromURL = (callback) => {
         console.error(error);
         return;
       }
+      
       fillRestaurantHTML();
+      const request = async () => {
+        const response = await
+          [].forEach.call(document.querySelectorAll('img[data-src]'),    function(img) {
+            img.setAttribute('src', img.getAttribute('data-src'));
+            img.onload = function() {
+              img.removeAttribute('data-src');
+            };
+          });
+      }
+      request();
       callback(null, restaurant)
     });
   }
@@ -59,7 +71,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   image.className = 'restaurant-img'
   // image.sizes = "(max-width: 800px) 100vw, 800px";  
   image.alt = restaurant.name + ' Restaurant Image';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.dataset.src = DBHelper.imageUrlForRestaurant(restaurant);
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;

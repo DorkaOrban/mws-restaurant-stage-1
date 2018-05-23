@@ -8,10 +8,11 @@
   <meta content="Udacity, Orbán Dorottya" name="author" />
   <meta content="Restaurant reviews app" name="description" />
   <meta content="Udacity, Orbán Dorottya © 2018" name="copyright" />
-  
-  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/mobilescreen.css">
+  <meta name="theme-color" content="orange"/>
+
+  <!-- <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" /> -->
+  <link rel="stylesheet" href="dist/styles.min.css">
+  <link rel="stylesheet" href="dist/mobilescreen.min.css">
   <link rel="apple-touch-icon" sizes="57x57" href="img/favicon/apple-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="/img/favicon/apple-icon-60x60.png">
   <link rel="apple-touch-icon" sizes="72x72" href="/img/favicon/apple-icon-72x72.png">
@@ -25,19 +26,14 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="96x96" href="/img/favicon/favicon-96x96.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
-  <link rel="manifest" href="/img/favicon/manifest.json">
+  <!-- <link rel="manifest" href="/img/favicon/manifest.json"> -->
   <link rel="icon" href="/img/favicon/favicon.ico" type="image/x-icon" />
   <meta name="msapplication-TileColor" content="#ffffff">
   <meta name="msapplication-TileImage" content="/img/favicon/ms-icon-144x144.png">
-  <meta name="theme-color" content="#ffffff">
+  <link rel="manifest" href="manifest.json" />
+
 
   <title>Restaurant Reviews</title>
-
-  <script charset="utf-8" src="js/dbhelper.js"></script>
-  <script charset="utf-8" src="js/common.js"></script>
-  <script charset="utf-8" src="js/main.js"></script>  
-  <script charset="utf-8" src="../assets/offline.js"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzSqvE6sHuzwcBsECSqTlsZ-kbvLrNOuk&libraries=places&callback=initMap"></script>
   
 </head>
 
@@ -45,6 +41,7 @@
   <header>
     <nav>
       <h1><a class="jsHomeLink" title="Restaurant Reviews Home page" href="/">Restaurant Reviews</a></h1>
+      <img class="btn_toggle toggle-to-right" src="./img/map_icon.svg"  onclick="toggleMap()"></img>
     </nav>
   </header>
 
@@ -87,7 +84,13 @@
     <span class="a-span" ><a href="/" class="jsHomeLink" title="Restaurant Reviews Home page"><strong>Restaurant Reviews</strong></a> </span><br>
     <span class="all-rights-span" >All Rights Reserved.</span>
   </footer>
-
+  <script charset="utf-8" src="../lib/idb.js"></script>
+  <script charset="utf-8" src="js/dbhelper.js"></script>
+  <script charset="utf-8" src="js/common.js"></script>
+  <script charset="utf-8" src="js/main.js"></script>  
+  <script charset="utf-8" src="../assets/offline.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzSqvE6sHuzwcBsECSqTlsZ-kbvLrNOuk&libraries=places&callback=initMap"></script>
+  
 </body>
 
 </html>

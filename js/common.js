@@ -12,15 +12,17 @@ function registerServiceWorker() {
   }
   console.log("The Service Worker is compatible with this browser!");
 
-  navigator.serviceWorker.register("sw.js").then(
-    function(registration) {
-      // Registration was successful
+  navigator.serviceWorker.register("sw.js").then( registration => {
       console.log("Service Worker registration successful with scope: ", registration.scope);
-    },
-    function(err) {
-      console.log("Service Worker registration failed: ", err);
     }
-  );
+  ).catch(error => {
+    console.log("Service Worker registration failed: ", err);
+    return;
+  });
+
+  // navigator.serviceWorker.addEventListener('controllerchange', () => {
+  //   window.location.reload();
+  // });
 }
 
 function checkServiceWorkerController() {
@@ -64,3 +66,13 @@ window.addEventListener("load", function() {
     }
   });
 });
+
+const toggleMap = () => {
+  if (document.getElementById('map').style.display === 'none'){
+    document.getElementById('map').style.display = 'block';
+    document.getElementsByClassName('filter-results-container')[0].style.marginTop = '0';
+  }
+  else{
+    document.getElementById('map').style.display = 'none';
+  }
+}

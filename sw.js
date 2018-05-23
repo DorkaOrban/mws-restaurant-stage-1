@@ -1,14 +1,14 @@
 const CACHE_NAME = 'my-site-cache-v5';
 const urlsToCache = [
   './',
-  '/img/favicon/',
-  '/data/restaurants.json', 
+  '/img/favicon/', 
   '/index.html',
   '/restaurant.html',
-  '/css/styles.css',
-  '/css/mobilescreen.css',
+  '/dist/styles.min.css',
+  '/dist/mobilescreen.min.css',
   '/js/dbhelper.js',
   '/js/main.js',
+  'js/common.js',
   '/js/restaurant_info.js',
   '/404.html'
 ];

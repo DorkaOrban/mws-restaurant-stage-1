@@ -3,10 +3,12 @@ let restaurants,
   cuisines;
 var map;
 var markers = [];
+let idbSupported = false;
 
 /**
- * Fetch neighborhoods and cuisines as soon as the page is loaded.
+ * Check indexedDB's availability and fetch neighborhoods and cuisines as soon as the page is loaded.
  */
+
 document.addEventListener('DOMContentLoaded', (event) => {
   fetchNeighborhoods();
   fetchCuisines();
@@ -18,7 +20,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 fetchNeighborhoods = () => {
   DBHelper.fetchNeighborhoods((error, neighborhoods) => {
     if (error) { // Got an error
-      console.error(error);
+      console.log(error);
     } else {
       self.neighborhoods = neighborhoods;
       fillNeighborhoodsHTML();
@@ -45,7 +47,7 @@ fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
 fetchCuisines = () => {
   DBHelper.fetchCuisines((error, cuisines) => {
     if (error) { // Got an error!
-      console.error(error);
+      console.log(error);
     } else {
       self.cuisines = cuisines;
       fillCuisinesHTML();
@@ -99,7 +101,7 @@ updateRestaurants = () => {
 
     DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, (error, restaurants) => {
       if (error) { // Got an error!
-        console.error(error);
+        console.log(error);
       } else {
         resetRestaurants(restaurants);
         fillRestaurantsHTML();
@@ -131,6 +133,16 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
   });
+
+  const request = async () => {
+      const response = await  [].forEach.call(document.querySelectorAll('img[data-src]'), function(img) {
+      img.setAttribute('src', img.getAttribute('data-src'));
+      img.onload = function() {
+        img.removeAttribute('data-src');
+      };
+    });
+  }
+  request();
   addMarkersToMap();
 }
 
@@ -143,7 +155,7 @@ createRestaurantHTML = (restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.alt = restaurant.name + ' Restaurant Image';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.dataset.src = DBHelper.imageUrlForRestaurant(restaurant);
   li.append(image);
 
   const name = document.createElement('h1');
