@@ -39,10 +39,6 @@ class DBHelper {
           if(response.ok) {
             response.json().then(json => {
               const restaurants = json;
-
-              if("indexedDB" in window) {
-                  console.log("indexedDB is available.");
-                  
                   idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
                     console.log('db old '+upgradeDB.oldVersion)
                     let keyValStore = upgradeDB.createObjectStore('resKeyval');
@@ -52,9 +48,7 @@ class DBHelper {
                   }).catch(() => {
                     console.log('Failed');
                   });
-                } else {
-                    console.log("indexedDB isn't available.");
-                }
+                
                 callback(null, restaurants);
             });
           } else {

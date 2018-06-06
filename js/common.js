@@ -66,13 +66,3 @@ window.addEventListener("load", function() {
     }
   });
 });
-
-const toggleMap = () => {
-  if (document.getElementById('map').style.display === 'none'){
-    document.getElementById('map').style.display = 'block';
-    document.getElementsByClassName('filter-results-container')[0].style.marginTop = '0';
-  }
-  else{
-    document.getElementById('map').style.display = 'none';
-  }
-}
