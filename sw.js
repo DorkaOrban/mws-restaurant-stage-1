@@ -6,10 +6,10 @@ const urlsToCache = [
   '/restaurant.html',
   '/dist/styles.min.css',
   '/dist/mobilescreen.min.css',
-  '/js/dbhelper.js',
-  '/js/main.js',
-  'js/common.js',
-  '/js/restaurant_info.js',
+  '/dist/dbhelper.js',
+  '/dist/main.js',
+  'dist/common.js',
+  '/dist/restaurant_info.js',
   '/404.html'
 ];
 
