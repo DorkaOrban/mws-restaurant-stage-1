@@ -68,8 +68,10 @@ self.addEventListener("fetch", event => {
         if (requestUrl.endsWith("jpg")) {
           targetCache = CACHE_NAME;
         }
-        if(requestUrl.indexOf("google") > -1){
-          return fetch(event.request);
+        if(requestUrl.indexOf("maps.googleapis.com") > -1){
+          return fetch(event.request).then(response => {
+            console.log(response)
+          })
         }
         
         return caches
