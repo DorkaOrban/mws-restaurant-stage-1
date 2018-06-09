@@ -41,6 +41,7 @@ class DBHelper {
               const restaurants = json;
                   idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
                     console.log('db old '+upgradeDB.oldVersion)
+                    
                     let keyValStore = upgradeDB.createObjectStore('resKeyval');
                     for(let i in restaurants){ 
                       keyValStore.put(restaurants[i], i);
@@ -56,13 +57,12 @@ class DBHelper {
           }
         }).catch(error => {
           DBHelper.setVersion(DBHelper.DATABASE_VERSION);
-          // console.log(DBHelper.DATABASE_VERSION)
+          
           idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
             switch (upgradeDB.oldVersion) {
               case 0:
                 upgradeDB.createObjectStore('resKeyval');
-              case 1:
-                // upgradeDB.createObjectStore('resKeyval2', {keyPath: ''});
+                 
             }
           }).then(db => {
             return db.transaction('resKeyval')
