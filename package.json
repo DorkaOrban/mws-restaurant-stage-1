@@ -1,0 +1,38 @@
+{
+  "name": "mws-restaurant-stage-1",
+  "version": "1.0.0",
+  "description": "--- #### _Three Stage Course Material Project - Restaurant Reviews_",
+  "main": "sw.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "gulp": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DorkaOrban/mws-restaurant-stage-1.git"
+  },
+  "devDependencies": {
+    "del": "^2.0.2",
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "latest",
+    "gulp-csso": "^2.0.0",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-sass": "^2.0.0",
+    "gulp-uglify": "^2.0.0",
+    "run-sequence": "^1.2.2",
+    "babel-core": "^5.8.25",
+    "gulp-babel": "^5.2.1"
+  },
+  "engines": {
+    "node": ">=0.12.0"
+  },
+  "author": "Orban Dorottya",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DorkaOrban/mws-restaurant-stage-1/issues"
+  },
+  "homepage": "https://github.com/DorkaOrban/mws-restaurant-stage-1#readme"
+}
