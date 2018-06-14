@@ -52,7 +52,7 @@
   </header>
 
   <main id="maincontent" class ="main-content">
-    <section id="map-container">
+    <section id="map-container" role="contentinfo" aria-label="Map">
         <div class="map-offline-placeholder">
             <h2 class="emphasis">Google Map</h2><br>
             <p class="emphasis">Connect to a Wifi or Mobile network to view the map.</p>
@@ -61,22 +61,21 @@
         <div id="map" aria-hidden="true" role="application"></div>
     </section>
 
-    <section id="filter-options-section" class="filter-results-container" >
+    <section id="filter-options-section" role="contentinfo" class="filter-results-container" aria-label="Filter options">
       <div class="filter-options">
         <!-- <h2>Filter Results</h2> -->
         <div class="inner-filter-option" > 
-          <label for="neighborhoods-select" class="hide-label">Neighborhoods</label>
-          <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
+          <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()" aria-label="Neighborhoods">
             <option value="all">All Neighborhoods</option>
           </select>
-          <label for="cuisines-select" class="hide-label">Cuisines</label>
-          <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
+
+          <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()" aria-label="Cuisines">
             <option value="all">All Cuisines</option>
           </select>
         </div>
       </div>
     </section>
-    <section id="restaurants-list-section" class="outer-rest-list">
+    <section id="restaurants-list-section" role="contentinfo" class="outer-rest-list" aria-label="Restaurants list">
       <div class="restaurant-list-div">
         <ul id="restaurants-list" class="restaurants-list-container"></ul>
       </div>

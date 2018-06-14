@@ -1,16 +1,16 @@
 const CACHE_NAME = 'my-site-cache-v5';
 const urlsToCache = [
-  './',
+  // '/',
   '/img/favicon/', 
-  '/index.html',
-  '/restaurant.html',
-  '/dist/styles.min.css',
-  '/dist/mobilescreen.min.css',
+  '/dist2/css/styles.css',
+  '/dist2/css/mobilescreen.css',
   '/dist/dbhelper.js',
   '/dist/main.js',
   'dist/common.js',
   '/dist/restaurant_info.js',
-  '/404.html'
+  '/404.html',
+  '/index.html',
+  '/restaurant.html',
 ];
 
 // Perform install steps

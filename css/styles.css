@@ -72,6 +72,12 @@ section {
   width: 100%;
   min-height: 800px;
 }
+#restaurant-maincontent{
+  width: 100%;
+  min-height: 800px;
+  margin-top: 8em;
+}
+
 .footer {
   background-color: #444;
   color: #d3d3d3;
@@ -126,13 +132,12 @@ a:focus{
 }
 
 #breadcrumb {
-    padding: 10px 40px 16px;
+    padding: 10px 0px 16px;
     list-style: none;
     background-color: transparent;
     font-size: 17px;
-    margin: 0;
-    width: calc(100% - 80px);
-    margin-top: 25px; 
+    margin: 0 auto;
+    width: 100%;
     position: relative;
     height: 20px;
 }
@@ -140,12 +145,13 @@ a:focus{
 /* Display list items side by side */
 #breadcrumb li {
     display: inline;
+    color: orange;
 }
 
 /* Add a slash symbol (/) before/behind each list item */
 #breadcrumb li+li:before {
     padding: 8px;
-    color: black;
+    color: #fff;
     content: "/\00a0";
 }
 
@@ -158,7 +164,7 @@ a:focus{
 /* Add a color on mouse-over */
 #breadcrumb li a:hover, 
 #breadcrumb li a:focus {
-    color: #01447e;
+    color: orange;
     text-decoration: underline;
 }
 

@@ -48,8 +48,15 @@
   <!-- Beginning header -->
   <header>
     <!-- Beginning nav -->
-    <nav>
+    <nav class="nav-restaurant">
       <h1><a class="jsHomeLink" title="Restaurant Reviews Home page" href="/">Restaurant Reviews</a></h1>
+          <!-- Beginning breadcrumb -->
+      <div>
+        <ul id="breadcrumb" role="navigation" aria-label="Breadcrumb">
+          <li><a title="Home" href="/">Home</a></li>
+        </ul>
+      </div>
+      <!-- End breadcrumb -->
     </nav>
      
     <!-- End nav -->
@@ -57,9 +64,9 @@
   <!-- End header -->
 
   <!-- Beginning main -->
-  <main id="maincontent">
+  <main id="restaurant-maincontent">
     <!-- Beginning map -->
-    <section id="map-container">
+    <section id="map-container" role="contentinfo" aria-label="Map container">
         <div class="map-offline-placeholder">
             <h2 class="emphasis">Google Map</h2><br>
             <p class="emphasis">Connect to a Wifi or Mobile network to view the map.</p>
@@ -68,14 +75,9 @@
         <div id="map" aria-hidden="true" role="application"></div>
     </section>
     <!-- End map -->
-    <!-- Beginning breadcrumb -->
-    <ul id="breadcrumb" >
-        <li><a title="Home" href="/">Home</a></li>
-      </ul>
-      <!-- End breadcrumb -->
 
     <!-- Beginning restaurant -->
-    <section id="restaurant-container">
+    <section id="restaurant-container" role="contentinfo" aria-label="Restaurant container">
       <h1 id="restaurant-name"></h1>
       <img id="restaurant-img">
       <p id="restaurant-cuisine"></p>
@@ -86,7 +88,7 @@
     </section>
     <!-- end restaurant -->
     <!-- Beginning reviews -->
-    <section id="reviews-container">
+    <section id="reviews-container" role="contentinfo" aria-label="Reviews container">
       <ul id="reviews-list"></ul>
     </section>
     <!-- End reviews -->
