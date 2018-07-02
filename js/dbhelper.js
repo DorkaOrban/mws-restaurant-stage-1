@@ -215,4 +215,34 @@ class DBHelper {
     return marker;
   }
 
-}
+  /**
+   *  Post review 
+  */
+
+  static postHelper(opts) {
+    console.log('Posting request to API...');
+    let url = `http://localhost:1337/reviews/`;
+    fetch(url, {
+      method: 'post',
+      body: JSON.stringify(opts)
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      console.log('Created:', data);
+    });
+    return;
+  }
+
+  static getReviews(restaurantId){
+    let url = `http://localhost:${port}/reviews/?restaurant_id=${restaurantId}`;
+    fetch(url, {
+      method: 'get',
+      body: JSON.stringify(opts)
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      console.log('Created:', data);
+    });
+    return;
+  }
+ }

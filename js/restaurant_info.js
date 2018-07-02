@@ -114,12 +114,22 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   title.innerHTML = 'Reviews';
   container.appendChild(title);
 
+  const sendReviewButton = document.createElement('button');
+  sendReviewButton.className = "send-review-button";
+  sendReviewButton.id = "sendReviewBtn";
+  sendReviewButton.innerHTML = "Send a review";   
+  sendReviewButton.onclick = () => {
+    document.getElementsByClassName('add-review')[0].style.display = 'block';
+  }
+  container.appendChild(sendReviewButton);
+
   if (!reviews) {
     const noReviews = document.createElement('p');
     noReviews.innerHTML = 'No reviews yet!';
     container.appendChild(noReviews);
     return;
   }
+
   const ul = document.getElementById('reviews-list');
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
@@ -179,4 +189,23 @@ getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+submitReview = () => {
+  const name = document.getElementById('reviewerName').value;
+  const content = document.getElementById('reviewBody').value;
+  const rad = document.reviewForm.rating;
+  const rating = rad.value;
+  const match = window.location.href.match(/id=(\d+)/);
+  if (match) {
+      var restaurantID = match[1];
+  }
+  if (content) {
+    DBHelper.postHelper({
+      "restaurant_id": restaurantID,
+      "name": name,
+      "rating": rating,
+      "comments": content
+    });
+  } 
 }

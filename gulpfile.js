@@ -58,9 +58,7 @@ gulp.task('es6', () => {
 gulp.task('scripts', function() {
     return gulp.src('./dist2/es5-js/*.js')
       // Minify the file
-      .pipe(uglify().on('error', function(e){
-        console.log(e);
-     }))
+      .pipe(uglify())
       // Output
       .pipe(gulp.dest('./dist2/js'))
 });

@@ -67,6 +67,11 @@
     }
 }
 @media only screen and (max-width: 768px) {
+    #form-container{
+        width: 90%;
+        margin-left: 0;
+        padding-left: 0 !important;
+    }
     #breadcrumb{
         width: 95%;
     }
@@ -82,6 +87,17 @@
         margin-top: 6.1em;
     } */
     #reviews-container h2{
+        padding-left: 10%;
+    }
+
+    #reviews-container p{
+        padding-left: 10%;
+    }
+    .send-review-button{
+        margin-left: 10%;
+    }
+
+    #form-container form{
         padding-left: 10%;
     }
 
@@ -122,7 +138,7 @@
         width: 100%;
     }
 
-    #restaurant-container, #reviews-container {
+    #restaurant-container, #reviews-container  {
         border-bottom: 0px solid #d9d9d9;
         border-top: 0px solid #fff;
         padding: 10px 0px 0px;

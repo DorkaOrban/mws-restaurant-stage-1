@@ -390,15 +390,78 @@ ul {
   margin: 0 auto;
 }
 
-#restaurant-container, #reviews-container {
+#restaurant-container, #reviews-container, #form-container {
   border-bottom: 0px solid #d9d9d9;
   border-top: 0px solid #fff;
   /* padding: 30px 10px 0px; */
   width: 50%;
 }
+.add-review{
+  display: none;
+}
 
-#reviews-container {
-  padding: 30px 10px 80px;
+#form-container textarea{
+  width: 80%;
+}
+
+.add-review input[type="text"],
+.add-review textarea{
+        background: rgba(255,255,255,.1);
+        border: none;
+        border-radius: 4px;
+        font-size: 13px;
+        margin: 0;
+        padding: 7px;
+        width: 80%;
+        box-sizing: border-box; 
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box; 
+        background-color: #fff;
+        border: 2px solid orange;
+        color:#8a97a0;
+        -webkit-box-shadow: 0 1px 0 rgba(0,0,0,0.03) inset;
+        box-shadow: 0 1px 0 rgba(0,0,0,0.03) inset;        
+}
+.add-review input[type="text"]:focus,
+.add-review  textarea:focus{
+  background-color: #fff;
+  border: 2px solid orange;
+}
+.add-review select{
+        -webkit-appearance: menulist-button;
+        height:35px;
+}
+
+.textarea-label{
+  display: grid;
+}
+.reviewBodyLabel{
+  background: transparent;
+}
+
+.submit-form{
+  margin-bottom: 30px;
+  background-color: orange;
+  border-bottom: 3px solid #eee;
+  display: inline-block;
+  padding: 8px 30px 10px;
+  text-decoration: none;
+  color: #fff;
+  font-size: 10pt;
+}
+
+.send-review-button{
+  background-color: orange;
+  border-bottom: 3px solid #eee;
+  display: inline-block;
+  padding: 8px 30px 10px;
+  text-decoration: none;
+  color: #fff;
+  font-size: 10pt;
+}
+#reviews-container,
+#form-container {
+  padding: 30px 10px 0px;
 }
 
 #reviews-container h2 {

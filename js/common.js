@@ -36,6 +36,7 @@ function checkServiceWorkerController() {
   }
 }
 
+
 window.addEventListener("load", function() { 
   if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){ 
     // Do Firefox-related activities
@@ -50,7 +51,7 @@ window.addEventListener("load", function() {
   for (const link of homeLinks) {
     link.href = `./`;
   }
- 
+
 
   this.fetch("404.html").catch(response => {
     if (response.name === "TypeError") {
