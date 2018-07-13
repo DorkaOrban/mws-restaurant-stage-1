@@ -117,6 +117,5 @@ self.addEventListener('sync', event => {
     //event.waitUntil(doSomeStuff());
     console.log('myFirstSync was called');
   }
-  //https://github.com/mauricewipf/Restaurant-Review-App/blob/master/sw.js
-  //Swivel
+
 });
