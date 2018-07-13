@@ -20,6 +20,18 @@ function registerServiceWorker() {
     return;
   });
 
+  navigator.serviceWorker.ready.then(reg => {  
+        // set up a message channel to communicate with the SW
+        const channel = new MessageChannel();
+        channel.port1.onmessage = e => {
+          console.log(e);
+          handleChannelMessage(e.data);
+        }
+        mySW = reg.active;
+        mySW.postMessage('hello', [channel.port2]);
+      return reg.sync.register('myFirstSync');
+  });
+
   // navigator.serviceWorker.addEventListener('controllerchange', () => {
   //   window.location.reload();
   // });

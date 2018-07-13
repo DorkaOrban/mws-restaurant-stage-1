@@ -81,7 +81,9 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews
+  
   fillReviewsHTML();
+  
 }
 
 /**

@@ -10,7 +10,7 @@ class DBHelper {
   static get DATABASE_URL() {
     const port = 1337 // Change this to your server port 1337 
     //return `http://localhost:${port}/data/restaurants.json`;
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${port}/restaurants/`;
   }
 
   /**
@@ -221,28 +221,88 @@ class DBHelper {
 
   static postHelper(opts) {
     console.log('Posting request to API...');
-    let url = `http://localhost:1337/reviews/`;
+    let url = `http://localhost:${port}/reviews/`;
     fetch(url, {
       method: 'post',
-      body: JSON.stringify(opts)
+      body: JSON.stringify(opts),
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+			credentials: 'same-origin', // include, same-origin, *omit
+			headers: {
+				'content-type': 'application/json'
+			},
+			mode: 'cors', // no-cors, cors, *same-origin
+			redirect: 'follow', // *manual, follow, error
+			referrer: 'no-referrer', // *client, no-referrer
     }).then(function(response) {
       return response.json();
     }).then(function(data) {
       console.log('Created:', data);
+      idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
+        console.log(upgradeDB.oldVersion)
+        switch (upgradeDB.oldVersion) {
+          case 0:{
+            let keyValStore = upgradeDB.createObjectStore('reviews');
+            for(let i in data){ 
+              keyValStore.put(data[i], i);
+            }
+          }
+        }
+      }).then(db => {
+        return db.transaction('reviews')
+          .objectStore('reviews').getAll();
+      }).then(allObjs => console.log("Done!")); 
+
+
+      return data;
     });
+    
     return;
   }
 
-  static getReviews(restaurantId){
-    let url = `http://localhost:${port}/reviews/?restaurant_id=${restaurantId}`;
-    fetch(url, {
-      method: 'get',
-      body: JSON.stringify(opts)
-    }).then(function(response) {
-      return response.json();
-    }).then(function(data) {
-      console.log('Created:', data);
-    });
-    return;
+  /**
+   * Fetch all reviews and save them into idb.
+   */
+  static fetchReviews(restaurantId, callback) { 
+    const url = `http://localhost:${port}/reviews/?restaurant_id=${restaurantId}`;
+    const request = async () => {
+        const response = await fetch(url)
+        .then((response) => {
+          if(response.ok) {
+            response.json().then(json => {
+              const reviews = json;
+                  idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
+                    console.log('db old '+upgradeDB.oldVersion)
+                    
+                    let keyValStore = upgradeDB.createObjectStore('reviews');
+                    for(let i in reviews){ 
+                      keyValStore.put(reviews[i], i);
+                    }
+                  }).catch(() => {
+                    console.log('Failed');
+                  });
+                
+                callback(null, reviews);
+            });
+          } else {
+            console.log(`Request failed. Returned status of ${response.status} with ${response.statusText}`);
+          }
+        }).catch(error => {
+          DBHelper.setVersion(DBHelper.DATABASE_VERSION);
+          
+          idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
+            switch (upgradeDB.oldVersion) {
+              case 0:
+                upgradeDB.createObjectStore('reviews');
+            }
+          }).then(db => {
+            return db.transaction('reviews')
+              .objectStore('reviews').getAll();
+          }).then(allObjs => callback(null, allObjs));
+
+        });
+    }
+    request();
+
   }
+
  }

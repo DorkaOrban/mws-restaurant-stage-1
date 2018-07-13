@@ -4,6 +4,8 @@ const urlsToCache = [
   '/img/favicon/', 
   '/dist2/css/styles.css',
   '/dist2/css/mobilescreen.css',
+  'netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css',
+  'dist2/css/star-rating.css',
   '/dist/dbhelper.js',
   '/dist/main.js',
   'dist/common.js',
@@ -99,4 +101,22 @@ self.addEventListener("fetch", event => {
       })
     );
   }
+});
+
+self.addEventListener('message', event => {
+  console.log(event);
+
+  // var messages = JSON.parse(event.data);
+  if (event.data.action === 'skipWaiting') {
+     self.skipWaiting();
+  }
+});
+
+self.addEventListener('sync', event => {
+  if (event.tag == 'myFirstSync') {
+    //event.waitUntil(doSomeStuff());
+    console.log('myFirstSync was called');
+  }
+  //https://github.com/mauricewipf/Restaurant-Review-App/blob/master/sw.js
+  //Swivel
 });
