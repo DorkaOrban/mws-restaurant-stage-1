@@ -13,6 +13,9 @@
     <link rel="stylesheet" href="dist2/css/styles.css">
     <link rel="stylesheet" href="dist2/css/mobilescreen.css">
     <link rel="stylesheet" href="dist2/css/star-rating.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+    integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+    crossorigin=""/>
     <link rel="apple-touch-icon" sizes="57x57" href="img/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/img/favicon/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/img/favicon/apple-icon-72x72.png">
@@ -133,7 +136,11 @@
       <span class="all-rights-span" >All Rights Reserved.</span>
   </footer>
   <!-- End footer -->
-
+ <!-- Make sure you put this AFTER Leaflet's CSS -->
+ <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+   integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+   crossorigin=""></script>
+  
   <!-- Beginning scripts -->
   <script charset="utf-8" src="../lib/minified_idb.js"></script>
 
@@ -143,7 +150,7 @@
   <script type="text/javascript" src="dist/restaurant_info.js"></script> 
   <script charset="utf-8" src="dist/common.js"></script>
   <!-- Google Maps -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhGqw_kRZsGFx3-hbCdUq7966XZySAyFA&libraries=places&callback=initMap"></script>
+  <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhGqw_kRZsGFx3-hbCdUq7966XZySAyFA&libraries=places&callback=initMap"></script> -->
   <!-- End scripts -->
 
 </body>

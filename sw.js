@@ -114,7 +114,7 @@ self.addEventListener('message', event => {
 
 self.addEventListener('sync', event => {
   if (event.tag == 'myFirstSync') {
-    //event.waitUntil(doSomeStuff());
+
     console.log('myFirstSync was called');
   }
 

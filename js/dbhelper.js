@@ -204,16 +204,29 @@ class DBHelper {
   /**
    * Map marker for a restaurant.
    */
-  static mapMarkerForRestaurant(restaurant, map) {
-    const marker = new google.maps.Marker({
-      position: restaurant.latlng,
-      title: restaurant.name,
-      url: DBHelper.urlForRestaurant(restaurant),
-      map: map,
-      animation: google.maps.Animation.DROP}
-    );
+
+  static mapMarkerForRestaurant(restaurant, newMap) {
+    // https://leafletjs.com/reference-1.3.0.html#marker  
+    const marker = new L.marker([restaurant.latlng.lat, restaurant.latlng.lng],
+      {
+        title: restaurant.name,
+        alt: restaurant.name,
+        url: DBHelper.urlForRestaurant(restaurant)
+      })
+      marker.addTo(newMap);
     return marker;
-  }
+  } 
+
+  // static mapMarkerForRestaurant(restaurant, map) {
+  //   const marker = new google.maps.Marker({
+  //     position: restaurant.latlng,
+  //     title: restaurant.name,
+  //     url: DBHelper.urlForRestaurant(restaurant),
+  //     map: map,
+  //     animation: google.maps.Animation.DROP}
+  //   );
+  //   return marker;
+  // }
 
   /**
    *  Post review 
@@ -262,8 +275,8 @@ class DBHelper {
   /**
    * Fetch all reviews and save them into idb.
    */
-  static fetchReviews(restaurantId, callback) { 
-    const url = `http://localhost:${port}/reviews/?restaurant_id=${restaurantId}`;
+  static fetchReviews(callback) { 
+    const url = `http://localhost:${port}/reviews/`;
     const request = async () => {
         const response = await fetch(url)
         .then((response) => {
@@ -303,6 +316,23 @@ class DBHelper {
     }
     request();
 
+  }
+
+  static fetchReviewsById(id, callback) {
+    
+    // fetch all restaurants with proper error handling.
+    DBHelper.fetchReviews((error, reviews) => {
+      if (error) {
+        callback(error, null);
+      } else {
+        const review = reviews.find(r => r.id == id);
+        if (review) { // Got the restaurant
+          callback(null, review);
+        } else { // Restaurant does not exist in the database
+          callback('Review does not exist', null);
+        }
+      }
+    });
   }
 
  }
