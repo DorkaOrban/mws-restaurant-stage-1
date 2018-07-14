@@ -142,6 +142,17 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
   container.appendChild(title);
+  const span = document.createElement('span');
+  span.className = "save-to-favourite";
+  container.appendChild(span);
+  const aSave = document.createElement('a');
+  aSave.className = "save-heart-span";
+  aSave.href = "#";
+  aSave.onclick = saveFavouriteRestaurant();
+  aSave.innerHTML = 'Save to favourite <i class=\"fa fa-heart\"></i>';
+  span.appendChild(aSave);
+  const br = document.createElement('br');
+  container.appendChild(br);
 
   const sendReviewButton = document.createElement('button');
   sendReviewButton.className = "send-review-button";
@@ -237,4 +248,11 @@ submitReview = () => {
       "comments": content
     });
   } 
+}
+saveFavouriteRestaurant = () => {
+  // http://localhost:1337/restaurants/<restaurant_id>/?is_favorite=true
+  
+  DBHelper.postFavourite({
+    "is_favourite": true
+  });
 }

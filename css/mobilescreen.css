@@ -93,6 +93,9 @@
     #reviews-container p{
         padding-left: 10%;
     }
+    #reviews-container span{
+        padding-left: 10%;
+    }
     .send-review-button{
         margin-left: 10%;
     }

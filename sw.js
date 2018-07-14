@@ -4,7 +4,7 @@ const urlsToCache = [
   '/img/favicon/', 
   '/dist2/css/styles.css',
   '/dist2/css/mobilescreen.css',
-  'netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css',
+  'https://netdna.bootstrapcdn.com/font-awesome/3.2.1/font/fontawesome-webfont.ttf?v=3.2.1',
   'dist2/css/star-rating.css',
   '/dist/dbhelper.js',
   '/dist/main.js',
