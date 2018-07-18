@@ -1,7 +1,8 @@
 /**
  * Common database helper functions.
  */
-var database_version = 10;
+var database_version = 11;
+const port = 1337;
 class DBHelper {
   /**
    * Database URL.
@@ -24,7 +25,7 @@ class DBHelper {
     return database_version;
   }
 
- static setVersion(newVersionNumber) {
+  static setVersion(newVersionNumber) {
     this.database_version = newVersionNumber;
     return this.database_version;
   }
@@ -41,10 +42,11 @@ class DBHelper {
               const restaurants = json;
                   idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
                     console.log('db old '+upgradeDB.oldVersion)
-                    
-                    let keyValStore = upgradeDB.createObjectStore('resKeyval');
-                    for(let i in restaurants){ 
-                      keyValStore.put(restaurants[i], i);
+                    if (!upgradeDB.objectStoreNames.contains('resKeyval')) {
+                        let keyValStore = upgradeDB.createObjectStore('resKeyval');
+                        for(let i in restaurants){ 
+                          keyValStore.put(restaurants[i], i);
+                        }
                     }
                   }).catch(() => {
                     console.log('Failed');
@@ -254,9 +256,11 @@ class DBHelper {
         console.log(upgradeDB.oldVersion)
         switch (upgradeDB.oldVersion) {
           case 0:{
-            let keyValStore = upgradeDB.createObjectStore('reviews');
-            for(let i in data){ 
-              keyValStore.put(data[i], i);
+            if (!upgradeDB.objectStoreNames.contains('reviews')) {
+              let keyValStore = upgradeDB.createObjectStore('reviews');
+              for(let i in data){ 
+                keyValStore.put(data[i], i);
+              }
             }
           }
         }
@@ -276,6 +280,7 @@ class DBHelper {
    * Fetch all reviews and save them into idb.
    */
   static fetchReviews(callback) { 
+    
     const url = `http://localhost:${port}/reviews/`;
     const request = async () => {
         const response = await fetch(url)
@@ -283,12 +288,16 @@ class DBHelper {
           if(response.ok) {
             response.json().then(json => {
               const reviews = json;
-                  idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
+              console.log(reviews);
+              console.log(DBHelper.DATABASE_VERSION);
+              idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
                     console.log('db old '+upgradeDB.oldVersion)
-                    
-                    let keyValStore = upgradeDB.createObjectStore('reviews');
-                    for(let i in reviews){ 
-                      keyValStore.put(reviews[i], i);
+                    if (!upgradeDB.objectStoreNames.contains('reviews')) {
+                      let keyValStore = upgradeDB.createObjectStore('reviews');
+                      for(let i in reviews){ 
+                        keyValStore.put(reviews[i], i);
+                        console.log(reviews[i]);
+                      }
                     }
                   }).catch(() => {
                     console.log('Failed');
@@ -299,9 +308,9 @@ class DBHelper {
           } else {
             console.log(`Request failed. Returned status of ${response.status} with ${response.statusText}`);
           }
-        }).catch(error => {
+        }).catch(error => { 
+          console.log(error + 'if error: '+DBHelper.DATABASE_VERSION);
           DBHelper.setVersion(DBHelper.DATABASE_VERSION);
-          
           idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
             switch (upgradeDB.oldVersion) {
               case 0:
@@ -327,6 +336,7 @@ class DBHelper {
       } else {
         const review = reviews.find(r => r.id == id);
         if (review) { // Got the restaurant
+           console.log('one' + review)
           callback(null, review);
         } else { // Restaurant does not exist in the database
           callback('Review does not exist', null);
@@ -334,5 +344,40 @@ class DBHelper {
       }
     });
   }
+
+  static postFavourite(is_favorite){
+    let favorite = is_favorite ? "true": "false";
+    let url = `http://localhost:${port}/reviews/?is_favorite=${favorite}`;
+    fetch(url, {
+      method: 'post',
+      body: JSON.stringify(opts),
+      cache: 'no-cache', 
+			credentials: 'same-origin',
+			headers: {
+				'content-type': 'application/json'
+			},
+			mode: 'cors', // no-cors, cors, *same-origin
+			redirect: 'follow', // *manual, follow, error
+			referrer: 'no-referrer', // *client, no-referrer
+    }).then( function(response) {
+      return response.json();
+    }).then( function(data) {
+      console.log('Created:', data);
+      // idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION+1, upgradeDB => {
+      //   console.log(upgradeDB.oldVersion)
+      //   switch (upgradeDB.oldVersion) {
+      //     case 0:{
+      //       let keyValStore = upgradeDB.createObjectStore('reviews');
+      //       for(let i in data){ 
+      //         keyValStore.put(data[i], i);
+      //       }
+      //     }
+      //   }
+      // }).then(db => {
+      //   return db.transaction('reviews')
+      //     .objectStore('reviews').getAll();
+      // }).then(allObjs => console.log("Done!")); 
+  }) .catch(e =>console.log(e));
+}
 
  }

@@ -69,6 +69,22 @@ fetchRestaurantFromURL = (callback) => {
       }
       
       fillRestaurantHTML();
+      // fill reviews
+
+      const id = getParameterByName('id');
+      
+      if (id) {
+        DBHelper.fetchReviewsById(id, (error, reviews) => {
+          self.reviews = reviews;
+
+          if (!reviews) {
+            console.error(error);
+            return;
+          }
+        });
+      }
+
+      fillReviewsHTML();
       const request = async () => {
         const response = await
           [].forEach.call(document.querySelectorAll('img[data-src]'),    function(img) {
@@ -107,9 +123,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
-  // fill reviews
-  
-  fillReviewsHTML();
+
   
 }
 
@@ -137,7 +151,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+fillReviewsHTML = (reviews = self.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
@@ -147,11 +161,13 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   container.appendChild(span);
   const aSave = document.createElement('a');
   aSave.className = "save-heart-span";
+  aSave.id = "saveHeart";
   aSave.href = "#";
-  aSave.onclick = saveFavouriteRestaurant();
-  aSave.innerHTML = 'Save to favourite <i class=\"fa fa-heart\"></i>';
+  aSave.onclick = saveFavouriteRestaurant;
+  aSave.innerHTML = 'Save to favourite <i class=\"icon-heart-empty\"></i>';
   span.appendChild(aSave);
   const br = document.createElement('br');
+  container.appendChild(br);
   container.appendChild(br);
 
   const sendReviewButton = document.createElement('button');
@@ -171,7 +187,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   }
 
   const ul = document.getElementById('reviews-list');
-  reviews.forEach(review => {
+  reviews.forEach(review => {console.log('1'+ review)
     ul.appendChild(createReviewHTML(review));
   });
   container.appendChild(ul);
@@ -250,9 +266,19 @@ submitReview = () => {
   } 
 }
 saveFavouriteRestaurant = () => {
-  // http://localhost:1337/restaurants/<restaurant_id>/?is_favorite=true
-  
-  DBHelper.postFavourite({
-    "is_favourite": true
-  });
+  const saveHeart = document.getElementById("saveHeart");
+  console.log(saveHeart.className);
+  if(saveHeart.className+"".contains("favourite")){
+    DBHelper.postFavourite(
+      false
+    );
+    saveHeart.childNodes[0].className = "icon-heart-empty";
+    saveHeart.className = "unfavourite";
+  }else{
+    DBHelper.postFavourite(
+       true
+    );
+    saveHeart.childNodes[0].className = "fa fa-heart";
+    saveHeart.className = "favourite";
+  }
 }
