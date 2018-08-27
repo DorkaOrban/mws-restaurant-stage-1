@@ -69,22 +69,8 @@ fetchRestaurantFromURL = (callback) => {
       }
       
       fillRestaurantHTML();
-      // fill reviews
 
-      const id = getParameterByName('id');
-      
-      if (id) {
-        DBHelper.fetchReviewsById(id, (error, reviews) => {
-          self.reviews = reviews;
-
-          if (!reviews) {
-            console.error(error);
-            return;
-          }
-        });
-      }
-
-      fillReviewsHTML();
+      fillReviewsHTML(self.restaurant.id);
       const request = async () => {
         const response = await
           [].forEach.call(document.querySelectorAll('img[data-src]'),    function(img) {
@@ -97,6 +83,7 @@ fetchRestaurantFromURL = (callback) => {
       request();
       callback(null, restaurant)
     });
+    DBHelper.fetchAndCacheReviews();
   }
 }
 
@@ -151,24 +138,15 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.reviews) => {
+fillReviewsHTML = (id = self.restaurant.id) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
-  container.appendChild(title);
+  
   const span = document.createElement('span');
   span.className = "save-to-favourite";
   container.appendChild(span);
-  const aSave = document.createElement('a');
-  aSave.className = "save-heart-span";
-  aSave.id = "saveHeart";
-  aSave.href = "#";
-  aSave.onclick = saveFavouriteRestaurant;
-  aSave.innerHTML = 'Save to favourite <i class=\"icon-heart-empty\"></i>';
-  span.appendChild(aSave);
   const br = document.createElement('br');
-  container.appendChild(br);
-  container.appendChild(br);
 
   const sendReviewButton = document.createElement('button');
   sendReviewButton.className = "send-review-button";
@@ -177,7 +155,20 @@ fillReviewsHTML = (reviews = self.reviews) => {
   sendReviewButton.onclick = () => {
     document.getElementsByClassName('add-review')[0].style.display = 'block';
   }
-  container.appendChild(sendReviewButton);
+  const formContainer = document.getElementById('form-container');
+  const reviewFormContainer = document.getElementById('reviewFormContent');
+  formContainer.insertBefore(title, reviewFormContainer);
+  formContainer.insertBefore(sendReviewButton, reviewFormContainer);
+  formContainer.insertBefore(br, reviewFormContainer);
+
+	var reviews = DBHelper.fetchReviews(id)
+    .then(reviews => {
+      const ul = document.getElementById('reviews-list');
+      reviews.forEach(review => {
+        ul.appendChild(createReviewHTML(review));
+      })
+      container.appendChild(ul);
+    });
 
   if (!reviews) {
     const noReviews = document.createElement('p');
@@ -185,12 +176,6 @@ fillReviewsHTML = (reviews = self.reviews) => {
     container.appendChild(noReviews);
     return;
   }
-
-  const ul = document.getElementById('reviews-list');
-  reviews.forEach(review => {console.log('1'+ review)
-    ul.appendChild(createReviewHTML(review));
-  });
-  container.appendChild(ul);
 }
 
 /**
@@ -198,13 +183,22 @@ fillReviewsHTML = (reviews = self.reviews) => {
  */
 createReviewHTML = (review) => {
   const li = document.createElement('li');
+  if(!navigator.onLine){
+    const connectionStatus = document.createElement('p');
+    connectionStatus.classList.add('offline_label');
+    connectionStatus.innerHTML = "Offline";
+    li.classList.add("reviews_offline");
+    li.appendChild(connectionStatus);
+  }
   const name = document.createElement('p');
   name.innerHTML = review.name;
   name.className = "reviews-user-name";
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  const reviewDate = new Date(review.createdAt);
+  date.innerHTML = reviewDate.getDate() +'/'+ reviewDate.getMonth() + '/'+reviewDate.getFullYear()
+  // date.innerHTML = reviewDate.toLocaleString();
   date.className = "reviews-user-date";
   li.appendChild(date);
 
@@ -256,29 +250,21 @@ submitReview = () => {
   if (match) {
       var restaurantID = match[1];
   }
-  if (content) {
-    DBHelper.postHelper({
-      "restaurant_id": restaurantID,
-      "name": name,
-      "rating": rating,
-      "comments": content
-    });
-  } 
-}
-saveFavouriteRestaurant = () => {
-  const saveHeart = document.getElementById("saveHeart");
-  console.log(saveHeart.className);
-  if(saveHeart.className+"".contains("favourite")){
-    DBHelper.postFavourite(
-      false
-    );
-    saveHeart.childNodes[0].className = "icon-heart-empty";
-    saveHeart.className = "unfavourite";
-  }else{
-    DBHelper.postFavourite(
-       true
-    );
-    saveHeart.childNodes[0].className = "fa fa-heart";
-    saveHeart.className = "favourite";
+  const frontendReview = {
+    restaurant_id: parseInt(restaurantID),
+    rating: rating,
+    name: name,
+    comments: content.substring(0, 300),
+    createdAt: new Date()
   }
+	if (content) {
+      DBHelper.addReview(frontendReview);
+      createReviewHTML(frontendReview);
+      if(navigator.onLine){
+        window.location.reload();
+      }
+      console.log('frontendReview.name:',frontendReview.name);
+      document.getElementById('reviewFormContent').reset();
+  }  
 }
+

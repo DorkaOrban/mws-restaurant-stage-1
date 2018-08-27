@@ -154,11 +154,14 @@ resetRestaurants = (restaurants) => {
 fillRestaurantsHTML = (restaurants = self.restaurants) => {
   const ul = document.getElementById('restaurants-list');
   restaurants.forEach(restaurant => {
-    ul.append(createRestaurantHTML(restaurant));
+    if(typeof restaurant.name !== 'undefined'){
+      ul.append(createRestaurantHTML(restaurant));
+    }
   });
 
   const request = async () => {
-      const response = await  [].forEach.call(document.querySelectorAll('img[data-src]'), function(img) {
+      const response = await [].
+      forEach.call(document.querySelectorAll('img[data-src]'), function(img) {
       img.setAttribute('src', img.getAttribute('data-src'));
       img.onload = function() {
         img.removeAttribute('data-src');
@@ -186,6 +189,28 @@ createRestaurantHTML = (restaurant) => {
   name.innerHTML = restaurant.name;
   li.append(name);
 
+  const span = document.createElement('span');
+  span.className = "save-to-favourite";
+  li.appendChild(span);
+  const aSave = document.createElement('a');
+  aSave.className = "save-heart-span";
+  aSave.classList.add("myFavorite");
+  aSave.id = "saveHeart"+restaurant.id;
+  aSave.href = "javascript:void(0)";
+
+  aSave.onclick = function() {
+    const isFavNow = !restaurant.is_favorite;
+    DBHelper.updateFavouriteStatus(restaurant.id, isFavNow);
+    restaurant.is_favorite = isFavNow;
+    changeFavElementClass(aSave, isFavNow);
+  }
+  changeFavElementClass(aSave, restaurant.is_favorite);  
+  
+  aSave.innerHTML = 'Save to favourite <i class="fa fa-heart"></i>';
+  span.appendChild(aSave);
+  const br = document.createElement('br');
+  li.appendChild(br);
+
   const neighborhood = document.createElement('p');
   neighborhood.innerHTML = restaurant.neighborhood;
   neighborhood.className = "neighborhood-p-name";
@@ -206,6 +231,19 @@ createRestaurantHTML = (restaurant) => {
   return li;
 }
 
+changeFavElementClass = (el, fav) => {
+  if (!fav){
+    el.classList.remove('favourite_yes');
+    el.classList.add('favourite_no');
+    el.setAttribute('aria-label', 'mark as favourite');
+  }else{
+    console.log('toggle yes update');
+    el.classList.add('favourite_yes');
+    el.classList.remove('favourite_no');
+    el.setAttribute('aria-label', 'remove as favourite');
+  }
+}
+
 /**
  * Add markers for current restaurants to the map.
  */
@@ -214,8 +252,10 @@ addMarkersToMap = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     // Add marker to the map
     const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.newMap);
-    marker.on("click", onClick => window.location.href = marker.options.url);
-    self.markers.push(marker);
+    if(typeof marker !== 'undefined'){
+      marker.on("click", onClick => window.location.href = marker.options.url);
+      self.markers.push(marker);
+    }
   });
 
 } 
@@ -230,5 +270,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
 //     self.markers.push(marker);
 //   });
 // }
+
+
 
  

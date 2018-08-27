@@ -89,20 +89,23 @@
     #reviews-container h2{
         padding-left: 10%;
     }
-
-    #reviews-container p{
+    #form-container form{
         padding-left: 10%;
     }
+
+    #reviews-container p{
+        padding-left: 0%;
+    }
     #reviews-container span{
-        padding-left: 10%;
+        padding-left: 0%;
     }
     .send-review-button{
         margin-left: 10%;
     }
 
-    #form-container form{
-        padding-left: 10%;
-    }
+    /* #form-container form{
+        padding-left: 0%;
+    } */
 
     nav {
         display: block;

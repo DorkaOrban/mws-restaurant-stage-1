@@ -15,16 +15,16 @@
     "url": "git+https://github.com/DorkaOrban/mws-restaurant-stage-1.git"
   },
   "devDependencies": {
+    "babel-core": "^5.8.25",
     "del": "^2.0.2",
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.1",
     "gulp-autoprefixer": "latest",
+    "gulp-babel": "^5.2.1",
     "gulp-csso": "^2.0.0",
     "gulp-htmlmin": "^3.0.0",
     "gulp-sass": "^2.0.0",
     "gulp-uglify": "^2.0.0",
-    "run-sequence": "^1.2.2",
-    "babel-core": "^5.8.25",
-    "gulp-babel": "^5.2.1"
+    "run-sequence": "^1.2.2"
   },
   "engines": {
     "node": ">=0.12.0"

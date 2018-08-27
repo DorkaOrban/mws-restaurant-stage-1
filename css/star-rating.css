@@ -1,5 +1,5 @@
-@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
-
+@import url(../css/font-awesome.css);
+/* @import url(https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css); */
 fieldset, label { margin: 0; padding: 0; }
 
 /****** Style Star Rating Widget *****/

@@ -1,7 +1,7 @@
 /**
  * Common database helper functions.
  */
-var database_version = 11;
+var database_version = 13;
 const port = 1337;
 class DBHelper {
   /**
@@ -13,6 +13,20 @@ class DBHelper {
     //return `http://localhost:${port}/data/restaurants.json`;
     return `http://localhost:${port}/restaurants/`;
   }
+
+  /**
+	 * Database REVIEWS URL.
+	 * Change this to restaurants.json file location on your server.
+	 */
+	static get DATABASE_REVIEWS_URL() {
+		const port = 1337; 
+		return `http://localhost:${port}/reviews/?restaurant_id=`;
+  }
+  
+  static get DATABASE_ALL_REVIEWS() {
+		const port = 1337; 
+		return `http://localhost:${port}/reviews/`;
+	}
 
   /**
    * Database name
@@ -30,6 +44,31 @@ class DBHelper {
     return this.database_version;
   }
 
+  static dbPromise(){
+    return idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION +1, upgradeDB => {
+      switch(upgradeDB.oldVersion){
+        case upgradeDB.oldVersion:{
+          if (!upgradeDB.objectStoreNames.contains('resKeyval', {
+            keyPath: 'id',
+            autoIncrement: true
+          })) {
+            upgradeDB.createObjectStore('resKeyval', {
+              keyPath: 'id',
+              autoIncrement: true
+            });
+          }
+        }
+        case upgradeDB.oldVersion + 1: {
+          const reviewsStore = upgradeDB.createObjectStore('reviews', {
+            keyPath: 'id',
+            autoIncrement: true
+          });
+          reviewsStore.createIndex('restaurant', 'restaurant_id');
+        }
+      }
+    });
+  }
+
   /**
    * Fetch all restaurants and save them into idb.
    */
@@ -41,13 +80,13 @@ class DBHelper {
             response.json().then(json => {
               const restaurants = json;
                   idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
-                    console.log('db old '+upgradeDB.oldVersion)
-                    if (!upgradeDB.objectStoreNames.contains('resKeyval')) {
+                    //console.log('db old '+upgradeDB.oldVersion)
+                  //  if (!upgradeDB.objectStoreNames.contains('resKeyval')) {
                         let keyValStore = upgradeDB.createObjectStore('resKeyval');
                         for(let i in restaurants){ 
                           keyValStore.put(restaurants[i], i);
                         }
-                    }
+                   // }
                   }).catch(() => {
                     console.log('Failed');
                   });
@@ -60,7 +99,7 @@ class DBHelper {
         }).catch(error => {
           DBHelper.setVersion(DBHelper.DATABASE_VERSION);
           
-          idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
+          idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION +1, upgradeDB => {
             switch (upgradeDB.oldVersion) {
               case 0:
                 upgradeDB.createObjectStore('resKeyval');
@@ -199,7 +238,11 @@ class DBHelper {
    */
   static imageUrlForRestaurant(restaurant) {
     let photog = restaurant.photograph;
-    if(typeof photog  == 'undefined') photog = restaurant.id;
+
+    if(typeof photog  === 'undefined'){
+      photog = restaurant.id ? restaurant.id : 10;
+      return (`/img/${photog}.jpg`);
+    }
     return (`/img/${photog}.jpg`);
   }
 
@@ -208,15 +251,16 @@ class DBHelper {
    */
 
   static mapMarkerForRestaurant(restaurant, newMap) {
-    // https://leafletjs.com/reference-1.3.0.html#marker  
-    const marker = new L.marker([restaurant.latlng.lat, restaurant.latlng.lng],
-      {
-        title: restaurant.name,
-        alt: restaurant.name,
-        url: DBHelper.urlForRestaurant(restaurant)
-      })
-      marker.addTo(newMap);
-    return marker;
+    if(typeof restaurant.latlng !== 'undefined'){
+      const marker = new L.marker([restaurant.latlng.lat, restaurant.latlng.lng],
+        {
+          title: restaurant.name,
+          alt: restaurant.name,
+          url: DBHelper.urlForRestaurant(restaurant)
+        })
+        marker.addTo(newMap);
+      return marker;
+    }
   } 
 
   // static mapMarkerForRestaurant(restaurant, map) {
@@ -230,101 +274,65 @@ class DBHelper {
   //   return marker;
   // }
 
-  /**
-   *  Post review 
-  */
+  /** 
+   * fetch and cache all reviews
+   */
 
-  static postHelper(opts) {
-    console.log('Posting request to API...');
-    let url = `http://localhost:${port}/reviews/`;
-    fetch(url, {
-      method: 'post',
-      body: JSON.stringify(opts),
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-			credentials: 'same-origin', // include, same-origin, *omit
-			headers: {
-				'content-type': 'application/json'
-			},
-			mode: 'cors', // no-cors, cors, *same-origin
-			redirect: 'follow', // *manual, follow, error
-			referrer: 'no-referrer', // *client, no-referrer
-    }).then(function(response) {
-      return response.json();
-    }).then(function(data) {
-      console.log('Created:', data);
-      idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
-        console.log(upgradeDB.oldVersion)
-        switch (upgradeDB.oldVersion) {
-          case 0:{
-            if (!upgradeDB.objectStoreNames.contains('reviews')) {
-              let keyValStore = upgradeDB.createObjectStore('reviews');
-              for(let i in data){ 
-                keyValStore.put(data[i], i);
-              }
-            }
-          }
-        }
-      }).then(db => {
-        return db.transaction('reviews')
-          .objectStore('reviews').getAll();
-      }).then(allObjs => console.log("Done!")); 
-
-
-      return data;
-    });
+  static fetchAndCacheReviews(){
+    return fetch(DBHelper.DATABASE_ALL_REVIEWS)
+      .then(response => response.json())
+      .then(reviews => {
+        return this.dbPromise()
+          .then(db => {
+            const tx = db.transaction('reviews', 'readwrite');
+            const reviewStore = tx.objectStore('reviews');
+            reviews.forEach(review => reviewStore.put(review));
+            return tx.complete.then(() => Promise.resolve(reviews));
+          })
+      }).catch(error => {
+        idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
     
-    return;
+        }).then(db => {
+          return db.transaction('reviews')
+            .objectStore('reviews').getAll();
+        }).then(allObjs => callback(null, allObjs));
+      });
   }
 
   /**
-   * Fetch all reviews and save them into idb.
+   * 
+   * fetch review by a specific id
    */
-  static fetchReviews(callback) { 
+
+	static fetchReviews(id) {
+    var reviewsURL = DBHelper.DATABASE_REVIEWS_URL + id;
     
-    const url = `http://localhost:${port}/reviews/`;
-    const request = async () => {
-        const response = await fetch(url)
-        .then((response) => {
-          if(response.ok) {
-            response.json().then(json => {
-              const reviews = json;
-              console.log(reviews);
-              console.log(DBHelper.DATABASE_VERSION);
-              idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
-                    console.log('db old '+upgradeDB.oldVersion)
-                    if (!upgradeDB.objectStoreNames.contains('reviews')) {
-                      let keyValStore = upgradeDB.createObjectStore('reviews');
-                      for(let i in reviews){ 
-                        keyValStore.put(reviews[i], i);
-                        console.log(reviews[i]);
-                      }
-                    }
-                  }).catch(() => {
-                    console.log('Failed');
-                  });
-                
-                callback(null, reviews);
-            });
-          } else {
-            console.log(`Request failed. Returned status of ${response.status} with ${response.statusText}`);
-          }
-        }).catch(error => { 
-          console.log(error + 'if error: '+DBHelper.DATABASE_VERSION);
-          DBHelper.setVersion(DBHelper.DATABASE_VERSION);
-          idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
-            switch (upgradeDB.oldVersion) {
-              case 0:
-                upgradeDB.createObjectStore('reviews');
-            }
-          }).then(db => {
-            return db.transaction('reviews')
-              .objectStore('reviews').getAll();
-          }).then(allObjs => callback(null, allObjs));
-
+		return fetch(reviewsURL)
+			.then(response => response.json())
+			.then(reviews => reviews)
+			.catch(e => {
+          console.log(e);
+          return this.getLocalDataByID('reviews', 'restaurant', id)
+                  .then((reviews) => {
+                  return Promise.resolve(reviews);
+          });
+      });
+  }
+  
+  static getLocalDataByID(objectStoreName, indexName, indexID){
+    const dbPromise = this.dbPromise();
+    let id = parseInt(indexID);
+    return dbPromise.then((db) => {
+          if (!db) return;
+          const store = this.getObjectStore(db, objectStoreName, 'readonly');
+          const storeIndex = store.index(indexName);
+          return Promise.resolve(storeIndex.getAll(id));
         });
-    }
-    request();
+  }
 
+  static getObjectStore(dbs, storeName, mode) {
+    let tx = dbs.transaction(storeName, mode);
+    return tx.objectStore(storeName);
   }
 
   static fetchReviewsById(id, callback) {
@@ -334,9 +342,9 @@ class DBHelper {
       if (error) {
         callback(error, null);
       } else {
-        const review = reviews.find(r => r.id == id);
+        const review = reviews.find(r => r.restaurant_id == id);
         if (review) { // Got the restaurant
-           console.log('one' + review)
+           //console.log('one' + review)
           callback(null, review);
         } else { // Restaurant does not exist in the database
           callback('Review does not exist', null);
@@ -345,12 +353,13 @@ class DBHelper {
     });
   }
 
-  static postFavourite(is_favorite){
+  static postFavourite(restaurantId, is_favorite){
+    var fetch = window.fetch.bind(window);
     let favorite = is_favorite ? "true": "false";
-    let url = `http://localhost:${port}/reviews/?is_favorite=${favorite}`;
+   let url = `http://localhost:${port}/restaurants/${restaurantId}/?is_favorite=${is_favorite}`;
     fetch(url, {
-      method: 'post',
-      body: JSON.stringify(opts),
+      method: 'PUT',
+      body: JSON.stringify({'is_favorite': is_favorite}),
       cache: 'no-cache', 
 			credentials: 'same-origin',
 			headers: {
@@ -363,21 +372,108 @@ class DBHelper {
       return response.json();
     }).then( function(data) {
       console.log('Created:', data);
-      // idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION+1, upgradeDB => {
-      //   console.log(upgradeDB.oldVersion)
-      //   switch (upgradeDB.oldVersion) {
-      //     case 0:{
-      //       let keyValStore = upgradeDB.createObjectStore('reviews');
-      //       for(let i in data){ 
-      //         keyValStore.put(data[i], i);
-      //       }
-      //     }
-      //   }
-      // }).then(db => {
-      //   return db.transaction('reviews')
-      //     .objectStore('reviews').getAll();
-      // }).then(allObjs => console.log("Done!")); 
-  }) .catch(e =>console.log(e));
+  }) .catch(e =>console.log('postfavourite ',e));
 }
 
- }
+static updateFavouriteStatus(restaurantId, isFavourite){
+  var fetch = window.fetch.bind(window);
+
+  fetch(`${DBHelper.DATABASE_URL}${restaurantId}`, {
+    method: 'PUT',
+    body: JSON.stringify({'is_favorite': isFavourite}),
+    cache: 'no-cache', 
+    credentials: 'same-origin',
+    headers: {
+      'content-type': 'application/json'
+    },
+    mode: 'cors', // no-cors, cors, *same-origin
+    redirect: 'follow', // *manual, follow, error
+    referrer: 'no-referrer', // *client, no-referrer
+    })
+    .then(() =>  {
+      console.log('changed');
+      this.dbPromise()
+        .then(db => {
+          const tx = db.transaction('resKeyval', 'readwrite');
+          const restaurantStore = tx.objectStore('resKeyval');
+
+          restaurantStore.get(restaurantId)
+            .then( restaurant => {
+              if(typeof restaurant !== 'undefined'){
+                restaurant.is_favorite = isFavourite;
+                restaurantStore.put(restaurant);
+              }
+            })
+        })
+    })
+}
+
+static addReview(review) {
+  let offlineObj = {
+    name: 'addReview',
+    data: review,
+    object_type: 'review'
+  };
+  if(!navigator.onLine && (offlineObj.name === 'addReview')){
+    DBHelper.sendDataWhenOnline(offlineObj);
+    //return;
+  }
+  let reviewSend = {
+    "name": review.name,
+    "rating": review.rating,
+    "comments" : review.comments,
+    "restaurant_id": parseInt(review.restaurant_id)
+  };
+  var fetchOptions = {
+    method: "POST",
+    body: JSON.stringify(reviewSend),
+    headers: {
+			'content-type': 'application/json'
+		}
+  };
+
+  return fetch(DBHelper.DATABASE_ALL_REVIEWS, fetchOptions)
+    .then(response => {
+      const contentType = response.headers.get('content-type');
+      if(contentType && contentType.indexOf('application/json') !== -1){
+        return response.json();
+      }else{
+        return 'API call successfull';
+      }
+    })
+    .then(data =>{
+      idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
+      }).then(db => {
+         db.transaction('reviews', 'readwrite')
+          .objectStore('reviews').put(data).complete();
+          return data;
+      })
+    })
+    .catch(e => {
+      // idb.open(DBHelper.DATABASE_NAME, DBHelper.DATABASE_VERSION, upgradeDB => {
+      // }).then(db => {
+      //   return db.transaction('reviews', 'readwrite')
+      //     .objectStore('reviews').put(data).complete();
+      // })
+    });
+}
+
+static sendDataWhenOnline(offlineObj){
+  console.log('sendDataWhenOnline')
+  localStorage.setItem('data', JSON.stringify(offlineObj.data));
+  window.addEventListener('online', event => {
+    let data = JSON.parse(localStorage.getItem('data'));
+    [...document.querySelectorAll(".reviews_offline")]
+      .forEach( el => {
+        el.classList.remove("reviews_offline")
+        el.querySelector(".offline_label").remove()
+      });
+      if(data !== null){
+        if(offlineObj.name === 'addReview'){
+          DBHelper.addReview(offlineObj.data);
+        }
+        localStorage.removeItem('data');
+      }
+  })
+}
+}
